@@ -1,4 +1,5 @@
 name: "My CodeQL Config"
 queries:
   - uses: security-and-quality
+  - uses: ./codeql/custom-java
   - path: codeql/custom-java/queries
