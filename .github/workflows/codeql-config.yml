@@ -1,3 +1,4 @@
-name: "Custom Java WebView Scans"
+name: "My CodeQL Config"
 queries:
-  - uses: ./codeql/custom-java/queries
+  - uses: security-and-quality
+  - path: ./codeql/custom-java/queries
