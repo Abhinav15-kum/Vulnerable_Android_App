@@ -1,0 +1,3 @@
+name: "Custom Java WebView Scans"
+queries:
+  - uses: ./codeql/custom-java/queries
