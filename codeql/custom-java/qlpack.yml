@@ -1,0 +1,6 @@
+name: custom-kotlin
+version: 1.0.0
+description: Custom Kotlin/Java WebView security queries
+dependencies:
+  codeql/java-queries: "*"
+  codeql/java-all: "*"
