@@ -1,7 +1,3 @@
-name: "Java CodeQL Config"
-
+name: "Custom Kotlin WebView Scans"
 queries:
-  - uses: security-and-quality
-  - path: codeql/custom-java/queries
-    include:
-      - java
+  - uses: ./codeql/custom-kotlin/queries
