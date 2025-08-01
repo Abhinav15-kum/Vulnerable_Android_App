@@ -31,7 +31,7 @@ jobs:
         queries:
           - uses: security-extended
           - name: Custom WebView queries
-            uses: ./codeql/custom-kotlin/queries
+            uses: ./codeql/custom-java/queries
         EOF
         echo "Configuration file created"
     
