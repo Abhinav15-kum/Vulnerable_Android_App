@@ -1,0 +1,3 @@
+- query: queries/WebViewVulnerabilities.ql
+  include:
+    - kotlin
