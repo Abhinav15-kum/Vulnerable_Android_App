@@ -1,4 +1,4 @@
-name: Custom CodeQL WebView Scan
+name: "CodeQL Analysis"
 
 on:
   push:
@@ -7,21 +7,56 @@ on:
 
 jobs:
   analyze:
-    name: Analyze Kotlin code with custom WebView query
+    name: Analyze
     runs-on: ubuntu-latest
     permissions:
       actions: read
       contents: read
       security-events: write
+
     strategy:
       fail-fast: false
       matrix:
         language: [ 'java' ]
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-    
+
+    - name: Setup JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+      with:
+        api-level: 33
+        build-tools: 33.0.0
+        ndk-version: 25.2.9519653
+
+    - name: Accept Android SDK licenses
+      run: |
+        yes | sdkmanager --licenses
+        sdkmanager --install "ndk;27.0.11902837"
+        
+    - name: Verify SDK installation
+      run: |
+        sdkmanager --list_installed
+        echo "ANDROID_HOME: $ANDROID_HOME"
+        ls -la $ANDROID_HOME/licenses/ || echo "No licenses directory found"
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+          
     # Use configuration file approach instead of pack dependencies
     - name: Create CodeQL configuration
       run: |
@@ -33,18 +68,18 @@ jobs:
           - name: Custom WebView queries
             uses: ./codeql/custom-java/queries
         EOF
-        echo "Configuration file created"
-    
+        echo "Configuration file created"      
+
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
         config-file: ./.github/codeql/codeql-config.yml
-    
+
     - name: Build with Gradle
       run: |
         chmod +x ./gradlew
         ./gradlew --no-daemon clean assembleDebug
-    
+
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
